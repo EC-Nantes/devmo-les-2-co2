@@ -2,6 +2,7 @@ package com.example.devmo_les_2_co2.ui
 
 
 import android.app.Activity
+import android.icu.text.NumberFormat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -42,12 +43,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.devmo_les_2_co2.R
-import com.example.devmo_les_2_co2.ui.theme.UnscrambleTheme
+import com.example.devmo_les_2_co2.ui.theme.Devmoles2co2Theme
+import androidx.compose.material3.TextField
+import java.util.Locale
+import androidx.compose.ui.text.input.KeyboardType
 
 @Composable
-fun FlashAdd(AppViewModel: AppViewModel = viewModel()) {
-    val gameUiState by gameViewModel.uiState.collectAsState()
-    val mediumPadding = dimensionResource(R.dimen.padding_medium)
+fun FlashAddScreen(appViewModel: AppViewModel = viewModel()) {
+    val appUiState by appViewModel.uiState.collectAsState()
+    val mediumPadding = 10.dp
 
     Column(
         modifier = Modifier
@@ -60,11 +64,20 @@ fun FlashAdd(AppViewModel: AppViewModel = viewModel()) {
     ) {
 
         // Header with the menu and name of the vue
-        Header(modifier) // Justin
+        // Header(modifier) // Justin
 
 
         // Area where tu put the emission
-        FlashAddLayout(modifier)
+        FlashAddLayout(
+            quantity = appUiState.currentQuantity,
+            factor = appUiState.currentEmissionFactor,
+            count = appUiState.currentCount,
+            onQtyChange = { appViewModel.updateQuantity(it) },
+            onFactorChange = { appViewModel.updateFactor(it) },
+            onCountChange = { appViewModel.updateCount(it) },
+            onKeyboardDone = { appViewModel.updateEmission() },
+            modifier = Modifier
+        )
         
         // Value of the emission
         EmissionStatus(score = appUiState.score, modifier = Modifier.padding(20.dp))
@@ -82,7 +95,7 @@ fun FlashAdd(AppViewModel: AppViewModel = viewModel()) {
 
         // For the tests: show what has been added
         Text(
-            text = stringResource(appUiState.current_info),
+            text = appUiState.currentInfo,
             fontSize = 16.sp
         )
     }
@@ -91,16 +104,17 @@ fun FlashAdd(AppViewModel: AppViewModel = viewModel()) {
 
 
 @Composable
-fun GameLayout(
-    currentScrambledWord: String,
-    wordCount: Int,
-    isGuessWrong: Boolean,
-    userGuess: String,
-    onUserGuessChanged: (String) -> Unit,
+fun FlashAddLayout(
+    quantity: String,
+    factor: String,
+    count: String,
+    onQtyChange: (String) -> Unit,
+    onFactorChange: (String) -> Unit,
+    onCountChange: (String) -> Unit,
     onKeyboardDone: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val mediumPadding = dimensionResource(R.dimen.padding_medium)
+    val mediumPadding = 5.dp
 
     Card(
         modifier = modifier,
@@ -111,27 +125,30 @@ fun GameLayout(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(mediumPadding)
         ) {
+
+            EditNumberField(R.string.quantity, quantity, "", onQtyChange, KeyboardType.Decimal)
+
+
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(R.string.quantity)
+                )
+
+
+            }
+            
             Text(
-                modifier = Modifier
-                    .clip(shapes.medium)
-                    .background(colorScheme.surfaceTint)
-                    .padding(horizontal = 10.dp, vertical = 4.dp)
-                    .align(alignment = Alignment.End),
-                text = stringResource(R.string.word_count, wordCount),
-                style = typography.titleMedium,
-                color = colorScheme.onPrimary
+                text = stringResource(R.string.factor)
             )
             Text(
-                text = currentScrambledWord,
-                style = typography.displayMedium
+                text = stringResource(R.string.count)
             )
-            Text(
-                text = stringResource(R.string.instructions),
-                textAlign = TextAlign.Center,
-                style = typography.titleMedium
-            )
+
             OutlinedTextField(
-                value = userGuess,
+                value = "0",
                 singleLine = true,
                 shape = shapes.large,
                 modifier = Modifier.fillMaxWidth(),
@@ -140,15 +157,8 @@ fun GameLayout(
                     unfocusedContainerColor = colorScheme.surface,
                     disabledContainerColor = colorScheme.surface,
                 ),
-                onValueChange = onUserGuessChanged,
-                label = {
-                    if (isGuessWrong) {
-                        Text(stringResource(R.string.wrong_guess))
-                    } else {
-                        Text(stringResource(R.string.enter_your_word))
-                    }
-                },
-                isError = isGuessWrong,
+                onValueChange = onQtyChange,
+                label = {   },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Done
                 ),
@@ -156,11 +166,42 @@ fun GameLayout(
                     onDone = { onKeyboardDone() }
                 )
             )
+
+
+            
         }
     }
 }
 
 
+@Composable
+fun EditNumberField(
+    name: Int,
+    value: String,
+    label: String,
+    onValueChanged: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    fieldType: KeyboardType = KeyboardType.Text
+) {
+    val mediumPadding = 5.dp
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(mediumPadding),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(mediumPadding)
+    ) {
+        Text(text = stringResource(name))
+
+        TextField(
+            value = value,
+            singleLine = true,
+            modifier = modifier,
+            onValueChange = onValueChanged,
+            label = { Text(label) },
+            keyboardOptions = KeyboardOptions(keyboardType = fieldType)
+        )
+    }
+}
 
 
 
@@ -171,8 +212,7 @@ fun EmissionStatus(score: Double, modifier: Modifier = Modifier) {
         modifier = modifier
     ) {
         Text(
-            text = stringResource(score, R.string.emission_unit),
-            style = typography.headlineMedium,
+            text = stringResource(R.string.emission_unit_kg, score),
             modifier = Modifier.padding(8.dp)
         )
 
@@ -181,10 +221,10 @@ fun EmissionStatus(score: Double, modifier: Modifier = Modifier) {
 
 
 
-@Preview(showBackground = true)
+@Preview()
 @Composable
 fun FlashAddPreview() {
-    UnscrambleTheme {
-        FlashAdd()
+    Devmoles2co2Theme {
+        FlashAddScreen()
     }
 }

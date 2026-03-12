@@ -4,9 +4,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.unscramble.data.MAX_NO_OF_WORDS
-import com.example.unscramble.data.SCORE_INCREASE
-import com.example.unscramble.data.allWords
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,14 +16,38 @@ class AppViewModel : ViewModel() {
 
     // App UI state
     private val _uiState = MutableStateFlow(AppUiState())
-    val uiState: StateFlow<GameUiState> = _uiState.asStateFlow()
+    val uiState: StateFlow<AppUiState> = _uiState.asStateFlow()
 
     var userGuess by mutableStateOf("")
         private set
 
 
+    init {
+        resetGame()
+    }
+
+    fun resetGame() {
+        _uiState.value = AppUiState()
+    }
+
     fun addEmission() {
-        
+        //
+    }
+
+    fun updateEmission() {
+        //
+    }
+
+    fun updateQuantity(quantity: String){
+        //
+    }
+
+    fun updateFactor(factor: String){
+        //
+    }
+
+    fun updateCount(factor: String){
+        //
     }
 
 
@@ -37,9 +58,7 @@ class AppViewModel : ViewModel() {
 
 
 
-    /*init {
-        resetGame()
-    }*/
+    
 
     
 

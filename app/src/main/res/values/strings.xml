@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">devmo-les-2-co2</string>
-    <string name="flash_add">devmo-les-2-co2</string>
+    <string name="add">Ajouter</string>
+    <string name="emission_unit_kg">%.2f kg CO2</string>
+    <string name="emission_unit_t">%.2f T CO2</string>
+    <string name="quantity">Quantité</string>
+    <string name="factor">Facteur</string>
+    <string name="count">Nombre</string>
 </resources>
