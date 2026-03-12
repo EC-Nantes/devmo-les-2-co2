@@ -71,7 +71,7 @@ fun FlashAdd(AppViewModel: AppViewModel = viewModel()) {
 
         // Button to add the emission
         OutlinedButton(
-            onClick = { gameViewModel.skipWord() },
+            onClick = { appViewModel.addEmission() },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
@@ -80,8 +80,9 @@ fun FlashAdd(AppViewModel: AppViewModel = viewModel()) {
             )
         }
 
+        // For the tests: show what has been added
         Text(
-            text = stringResource(R.string.result),
+            text = stringResource(appUiState.current_info),
             fontSize = 16.sp
         )
     }
