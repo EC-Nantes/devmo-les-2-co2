@@ -38,7 +38,7 @@ class AppViewModel : ViewModel() {
 
     fun addEmission() {
         if (userScore != 0.0) {
-            val tmp = "Emission: %.2f (qty: %.2f, fac: %.2f, cnt: %d)\n"
+            val tmp = "Emission: %.2f (qty: %.2f, fac: %.2f, cnt: %d, name: %s)\n"
             val qty = userQuantity.toDoubleOrNull() ?: 0.0
             val fac = userFactor.toDoubleOrNull() ?: 0.0
             val cnt =  userCount.toIntOrNull() ?: 0
@@ -49,7 +49,7 @@ class AppViewModel : ViewModel() {
                     currentQuantity = 0.0,
                     currentEmissionFactor = 0.0,
                     totalScore = currentState.totalScore.plus(userScore),
-                    currentInfo = currentState.currentInfo + tmp.format(userScore, qty, fac, cnt)
+                    currentInfo = currentState.currentInfo + tmp.format(userScore, qty, fac, cnt, currentState.name)
                 )
             }
         }

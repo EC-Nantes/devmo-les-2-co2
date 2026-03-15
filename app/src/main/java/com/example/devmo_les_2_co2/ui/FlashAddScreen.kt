@@ -67,6 +67,8 @@ fun FlashAddScreen(appViewModel: AppViewModel = viewModel()) {
         // Header with the menu and name of the vue
         // Header(modifier) // Justin
 
+        // Show the name of the emission
+        EmissionName(appUiState.name, modifier = Modifier.padding(10.dp).fillMaxWidth())
 
         // Area where tu put the emission
         FlashAddLayout(
@@ -173,6 +175,20 @@ fun EmissionStatus(score: Double, modifier: Modifier = Modifier) {
     ) {
         Text(
             text = stringResource(R.string.emission_unit_kg, score),
+            modifier = Modifier.padding(8.dp)
+        )
+
+    }
+}
+
+@Composable
+fun EmissionName(name: String, modifier: Modifier = Modifier) {
+    Card(
+        modifier = modifier
+    ) {
+        Text(
+            text = name,
+            textAlign = TextAlign.Center,
             modifier = Modifier.padding(8.dp)
         )
 
