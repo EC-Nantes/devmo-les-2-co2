@@ -1,42 +1,26 @@
 package com.example.devmo_les_2_co2.ui
 
 
-import android.app.Activity
-import android.icu.text.NumberFormat
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.MaterialTheme.shapes
-import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -45,9 +29,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.devmo_les_2_co2.R
 import com.example.devmo_les_2_co2.ui.theme.Devmoles2co2Theme
 import androidx.compose.material3.TextField
-import java.util.Locale
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.layout.Row
+import androidx.compose.ui.res.painterResource
+import androidx.compose.foundation.Image
 
 @Composable
 fun FlashAddScreen(appViewModel: AppViewModel = viewModel()) {
@@ -64,8 +49,41 @@ fun FlashAddScreen(appViewModel: AppViewModel = viewModel()) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        // Header with the menu and name of the vue
-        // Header(modifier) // Justin
+
+        // Quick icons
+        // Dans l'idéal, il y aurait une liste et on mettrait les 3/4 premiers icones
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(mediumPadding).fillMaxWidth()
+        ) {
+            Button(
+                onClick = { appViewModel.changeEmission(1.5, 5.3, "Voyage") }
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.wallet_travel),
+                    contentDescription = "Voyage"
+                )
+            }
+
+            Button(
+                onClick = { appViewModel.changeEmission(5.0, 9.0, "Pain") }
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.baguette),
+                    contentDescription = "Pain"
+                )
+            }
+
+            Button(
+                onClick = { appViewModel.changeEmission(0.5, 9.0, "Course") }
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.cart_variant),
+                    contentDescription = "Course"
+                )
+            }
+        }
 
         // Show the name of the emission
         EmissionName(appUiState.name, modifier = Modifier.padding(10.dp).fillMaxWidth())
@@ -100,6 +118,9 @@ fun FlashAddScreen(appViewModel: AppViewModel = viewModel()) {
             text = appUiState.currentInfo,
             fontSize = 16.sp
         )
+
+        // For tests: total emission
+        EmissionStatus(score = appUiState.totalScore, modifier = Modifier.padding(20.dp))
     }
 }
 
@@ -197,7 +218,7 @@ fun EmissionName(name: String, modifier: Modifier = Modifier) {
 
 
 
-@Preview()
+@Preview
 @Composable
 fun FlashAddPreview() {
     Devmoles2co2Theme {

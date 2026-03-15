@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.devmo_les_2_co2.ui.theme.Devmoles2co2Theme
 import com.example.devmo_les_2_co2.ui.FlashAddScreen

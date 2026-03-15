@@ -52,6 +52,7 @@ class AppViewModel : ViewModel() {
                     currentInfo = currentState.currentInfo + tmp.format(userScore, qty, fac, cnt, currentState.name)
                 )
             }
+            userCount = "0"
         }
     }
 
