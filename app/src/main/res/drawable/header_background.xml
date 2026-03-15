@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="400dp"
+    android:height="120dp"
+    android:viewportWidth="100"
+    android:viewportHeight="30">
+
+    <!-- Fond clair avec coins arrondis en bas -->
+    <path
+        android:fillColor="@color/vertclair"
+        android:pathData="
+            M0,0
+            H100
+            V22
+            Q100,30 92,30
+            H8
+            Q0,30 0,22
+            Z" />
+
+    <!-- Zone foncée à gauche, respectant l'arrondi bas gauche -->
+    <path
+        android:fillColor="@color/vertfonce"
+        android:pathData="
+            M0,0
+            H60
+            L50,0
+            L40,30
+            H8
+            Q0,30 0,22
+            Z" />
+
+</vector>
