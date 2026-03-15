@@ -18,8 +18,13 @@ class AppViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(AppUiState())
     val uiState: StateFlow<AppUiState> = _uiState.asStateFlow()
 
-    var userGuess by mutableStateOf("")
+    var userQuantity by mutableStateOf("")
         private set
+    var userFactor by mutableStateOf("")
+        private set
+    var userCount by mutableStateOf("")
+        private set
+    var userScore: Double = 0.0
 
 
     init {
@@ -28,131 +33,63 @@ class AppViewModel : ViewModel() {
 
     fun resetGame() {
         _uiState.value = AppUiState()
+        changeEmission(0.0, 0.0, "Default")
     }
 
     fun addEmission() {
-        //
+        if (userScore != 0.0) {
+            val tmp = "Emission: %.2f (qty: %.2f, fac: %.2f, cnt: %d)\n"
+            val qty = userQuantity.toDoubleOrNull() ?: 0.0
+            val fac = userFactor.toDoubleOrNull() ?: 0.0
+            val cnt =  userCount.toIntOrNull() ?: 0
+
+            _uiState.update { currentState ->
+                currentState.copy(
+                    name = "Default",
+                    currentQuantity = 0.0,
+                    currentEmissionFactor = 0.0,
+                    totalScore = currentState.totalScore.plus(userScore),
+                    currentInfo = currentState.currentInfo + tmp.format(userScore, qty, fac, cnt)
+                )
+            }
+        }
     }
 
     fun updateEmission() {
-        //
+        val quantity = userQuantity.toDoubleOrNull() ?: 0.0
+        val factor = userFactor.toDoubleOrNull() ?: 0.0
+        val count = userCount.toDoubleOrNull() ?: 0.0
+        userScore = quantity * factor * count
+    }
+
+    fun changeEmission(quantity: Double, factor: Double, name: String) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                name = name,
+                currentQuantity = quantity,
+                currentEmissionFactor = factor,
+                totalScore = currentState.totalScore,
+                currentInfo = currentState.currentInfo
+            )
+        }
+        userQuantity = quantity.toString()
+        userFactor = factor.toString()
+        userCount = "1"
+        updateEmission()
     }
 
     fun updateQuantity(quantity: String){
-        //
+        userQuantity = quantity.replace(",", ".")
+        updateEmission()
     }
 
     fun updateFactor(factor: String){
-        //
+        userFactor = factor.replace(",", ".")
+        updateEmission()
     }
 
-    fun updateCount(factor: String){
-        //
+    fun updateCount(count: String){
+        userCount = count.replace(",", ".")
+        updateEmission()
     }
-
-
-
-
-
-
-
-
-
-    
-
-    
-
-
-
-    /*
-     * Re-initializes the game data to restart the game.
-     */
-    /*fun resetGame() {
-        usedWords.clear()
-        _uiState.value = GameUiState(currentScrambledWord = pickRandomWordAndShuffle())
-    }*/
-
-    /*
-     * Update the user's guess
-     */
-    /*fun updateUserGuess(guessedWord: String){
-        userGuess = guessedWord
-    }*/
-
-    /*
-     * Checks if the user's guess is correct.
-     * Increases the score accordingly.
-     */
-    /*fun checkUserGuess() {
-        if (userGuess.equals(currentWord, ignoreCase = true)) {
-            // User's guess is correct, increase the score
-            // and call updateGameState() to prepare the game for next round
-            val updatedScore = _uiState.value.score.plus(SCORE_INCREASE)
-            updateGameState(updatedScore)
-        } else {
-            // User's guess is wrong, show an error
-            _uiState.update { currentState ->
-                currentState.copy(isGuessedWordWrong = true)
-            }
-        }
-        // Reset user guess
-        updateUserGuess("")
-    }*/
-
-    /*
-     * Skip to next word
-     */
-    /*fun skipWord() {
-        updateGameState(_uiState.value.score)
-        // Reset user guess
-        updateUserGuess("")
-    }*/
-
-    /*
-     * Picks a new currentWord and currentScrambledWord and updates UiState according to
-     * current game state.
-     */
-    /*private fun updateGameState(updatedScore: Int) {
-        if (usedWords.size == MAX_NO_OF_WORDS){
-            //Last round in the game, update isGameOver to true, don't pick a new word
-            _uiState.update { currentState ->
-                currentState.copy(
-                    isGuessedWordWrong = false,
-                    score = updatedScore,
-                    isGameOver = true
-                )
-            }
-        } else{
-            // Normal round in the game
-            _uiState.update { currentState ->
-                currentState.copy(
-                    isGuessedWordWrong = false,
-                    currentScrambledWord = pickRandomWordAndShuffle(),
-                    currentWordCount = currentState.currentWordCount.inc(),
-                    score = updatedScore
-                )
-            }
-        }
-    }
-
-    private fun shuffleCurrentWord(word: String): String {
-        val tempWord = word.toCharArray()
-        // Scramble the word
-        tempWord.shuffle()
-        while (String(tempWord) == word) {
-            tempWord.shuffle()
-        }
-        return String(tempWord)
-    }
-
-    private fun pickRandomWordAndShuffle(): String {
-        // Continue picking up a new random word until you get one that hasn't been used before
-        currentWord = allWords.random()
-        return if (usedWords.contains(currentWord)) {
-            pickRandomWordAndShuffle()
-        } else {
-            usedWords.add(currentWord)
-            shuffleCurrentWord(currentWord)
-        }
-    }*/
 }

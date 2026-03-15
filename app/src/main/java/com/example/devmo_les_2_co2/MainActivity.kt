@@ -5,13 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.devmo_les_2_co2.ui.theme.Devmoles2co2Theme
+import com.example.devmo_les_2_co2.ui.FlashAddScreen
+import androidx.compose.material3.Surface
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,36 +17,20 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Devmoles2co2Theme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
-            /*
-            Surface(
+                Surface(
                     modifier = Modifier.fillMaxSize(),
                 ) {
-                    GameScreen()
+                    FlashAddScreen()
                 }
-            */
+            }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Devmoles2co2Theme {
-        Greeting("Android")
-    }
-}
+// @Preview(showBackground = true)
+// @Composable
+// fun GreetingPreview() {
+//     Devmoles2co2Theme {
+//         Greeting("Android")
+//     }
+// }

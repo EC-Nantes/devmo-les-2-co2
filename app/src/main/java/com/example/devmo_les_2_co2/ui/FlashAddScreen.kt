@@ -47,6 +47,7 @@ import com.example.devmo_les_2_co2.ui.theme.Devmoles2co2Theme
 import androidx.compose.material3.TextField
 import java.util.Locale
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.foundation.layout.Row
 
 @Composable
 fun FlashAddScreen(appViewModel: AppViewModel = viewModel()) {
@@ -69,18 +70,17 @@ fun FlashAddScreen(appViewModel: AppViewModel = viewModel()) {
 
         // Area where tu put the emission
         FlashAddLayout(
-            quantity = appUiState.currentQuantity,
-            factor = appUiState.currentEmissionFactor,
-            count = appUiState.currentCount,
+            quantity = appViewModel.userQuantity,
+            factor = appViewModel.userFactor,
+            count = appViewModel.userCount,
             onQtyChange = { appViewModel.updateQuantity(it) },
             onFactorChange = { appViewModel.updateFactor(it) },
             onCountChange = { appViewModel.updateCount(it) },
-            onKeyboardDone = { appViewModel.updateEmission() },
             modifier = Modifier
         )
         
         // Value of the emission
-        EmissionStatus(score = appUiState.score, modifier = Modifier.padding(20.dp))
+        EmissionStatus(score = appViewModel.userScore, modifier = Modifier.padding(20.dp))
 
         // Button to add the emission
         OutlinedButton(
@@ -111,7 +111,6 @@ fun FlashAddLayout(
     onQtyChange: (String) -> Unit,
     onFactorChange: (String) -> Unit,
     onCountChange: (String) -> Unit,
-    onKeyboardDone: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val mediumPadding = 5.dp
@@ -126,49 +125,10 @@ fun FlashAddLayout(
             modifier = Modifier.padding(mediumPadding)
         ) {
 
-            EditNumberField(R.string.quantity, quantity, "", onQtyChange, KeyboardType.Decimal)
+            EditNumberField(R.string.quantity, quantity, "", onQtyChange, Modifier, KeyboardType.Decimal)
+            EditNumberField(R.string.factor, factor, "", onFactorChange, Modifier, KeyboardType.Decimal)
+            EditNumberField(R.string.count, count, "", onCountChange, Modifier, KeyboardType.Number)
 
-
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = stringResource(R.string.quantity)
-                )
-
-
-            }
-            
-            Text(
-                text = stringResource(R.string.factor)
-            )
-            Text(
-                text = stringResource(R.string.count)
-            )
-
-            OutlinedTextField(
-                value = "0",
-                singleLine = true,
-                shape = shapes.large,
-                modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = colorScheme.surface,
-                    unfocusedContainerColor = colorScheme.surface,
-                    disabledContainerColor = colorScheme.surface,
-                ),
-                onValueChange = onQtyChange,
-                label = {   },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = { onKeyboardDone() }
-                )
-            )
-
-
-            
         }
     }
 }
@@ -185,9 +145,9 @@ fun EditNumberField(
 ) {
     val mediumPadding = 5.dp
 
-    Column(
-        verticalArrangement = Arrangement.spacedBy(mediumPadding),
-        horizontalAlignment = Alignment.CenterHorizontally,
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(mediumPadding)
     ) {
         Text(text = stringResource(name))
