@@ -5,11 +5,7 @@ plugins {
 
 android {
     namespace = "com.example.devmo_les_2_co2"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.devmo_les_2_co2"

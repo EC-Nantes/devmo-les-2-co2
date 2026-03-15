@@ -1,130 +1,160 @@
 package com.example.devmo_les_2_co2.ui
 
-
+import android.view.LayoutInflater
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.devmo_les_2_co2.R
 import com.example.devmo_les_2_co2.ui.theme.Devmoles2co2Theme
-import androidx.compose.material3.TextField
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.foundation.layout.Row
-import androidx.compose.ui.res.painterResource
-import androidx.compose.foundation.Image
 
 @Composable
 fun FlashAddScreen(appViewModel: AppViewModel = viewModel()) {
     val appUiState by appViewModel.uiState.collectAsState()
-    val mediumPadding = 10.dp
+    val mediumPadding = 16.dp
 
     Column(
         modifier = Modifier
-            .statusBarsPadding()
+            .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .safeDrawingPadding()
-            .padding(mediumPadding),
-        verticalArrangement = Arrangement.Center,
+            .safeDrawingPadding(),
+        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
+        // 1. Le Header XML de votre ami (et vos corrections)
+        AndroidView(
+            factory = { context ->
+                LayoutInflater.from(context).inflate(R.layout.header_ajout_flash, null)
+            },
+            modifier = Modifier.fillMaxWidth()
+        )
 
-        // Quick icons
-        // Dans l'idéal, il y aurait une liste et on mettrait les 3/4 premiers icones
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(mediumPadding).fillMaxWidth()
+        Column(
+            modifier = Modifier
+                .padding(mediumPadding)
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(
-                onClick = { appViewModel.changeEmission(1.5, 5.3, "Voyage") }
+            
+            // 2. Icônes de raccourcis (Merge de votre ami)
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Image(
-                    painter = painterResource(R.drawable.wallet_travel),
+                ShortcutButton(
+                    onClick = { appViewModel.changeEmission(1.5, 5.3, "Voyage") },
+                    iconRes = R.drawable.wallet_travel,
                     contentDescription = "Voyage"
                 )
-            }
 
-            Button(
-                onClick = { appViewModel.changeEmission(5.0, 9.0, "Pain") }
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.baguette),
+                ShortcutButton(
+                    onClick = { appViewModel.changeEmission(5.0, 9.0, "Pain") },
+                    iconRes = R.drawable.baguette,
                     contentDescription = "Pain"
                 )
-            }
 
-            Button(
-                onClick = { appViewModel.changeEmission(0.5, 9.0, "Course") }
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.cart_variant),
+                ShortcutButton(
+                    onClick = { appViewModel.changeEmission(0.5, 9.0, "Course") },
+                    iconRes = R.drawable.cart_variant,
                     contentDescription = "Course"
                 )
             }
-        }
 
-        // Show the name of the emission
-        EmissionName(appUiState.name, modifier = Modifier.padding(10.dp).fillMaxWidth())
+            // 3. Nom de l'émission actuelle
+            EmissionName(appUiState.name, modifier = Modifier.fillMaxWidth())
 
-        // Area where tu put the emission
-        FlashAddLayout(
-            quantity = appViewModel.userQuantity,
-            factor = appViewModel.userFactor,
-            count = appViewModel.userCount,
-            onQtyChange = { appViewModel.updateQuantity(it) },
-            onFactorChange = { appViewModel.updateFactor(it) },
-            onCountChange = { appViewModel.updateCount(it) },
-            modifier = Modifier
-        )
+            // 4. Formulaire de saisie
+            FlashAddLayout(
+                quantity = appViewModel.userQuantity,
+                factor = appViewModel.userFactor,
+                count = appViewModel.userCount,
+                onQtyChange = { appViewModel.updateQuantity(it) },
+                onFactorChange = { appViewModel.updateFactor(it) },
+                onCountChange = { appViewModel.updateCount(it) },
+                modifier = Modifier.fillMaxWidth()
+            )
 
-        // Value of the emission
-        EmissionStatus(score = appViewModel.userScore, modifier = Modifier.padding(20.dp))
+            // 5. Score de l'émission en cours
+            EmissionStatus(
+                label = "Émission actuelle",
+                score = appViewModel.userScore, 
+                modifier = Modifier.fillMaxWidth()
+            )
 
-        // Button to add the emission
-        OutlinedButton(
-            onClick = { appViewModel.addEmission() },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = stringResource(R.string.add),
-                fontSize = 16.sp
+            // 6. Bouton Ajouter
+            OutlinedButton(
+                onClick = { appViewModel.addEmission() },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = stringResource(R.string.add),
+                    fontSize = 16.sp
+                )
+            }
+
+            // 7. Historique / Info (Optionnel pour debug)
+            if (appUiState.currentInfo.isNotEmpty()) {
+                Text(
+                    text = appUiState.currentInfo,
+                    fontSize = 12.sp,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Start
+                )
+            }
+
+            // 8. Score Total (Merge de votre ami)
+            EmissionStatus(
+                label = "Score Total",
+                score = appUiState.totalScore, 
+                modifier = Modifier.fillMaxWidth(),
+                containerColor = colorScheme.primaryContainer
             )
         }
-
-        // For the tests: show what has been added
-        Text(
-            text = appUiState.currentInfo,
-            fontSize = 16.sp
-        )
-
-        // For tests: total emission
-        EmissionStatus(score = appUiState.totalScore, modifier = Modifier.padding(20.dp))
     }
 }
 
-
+@Composable
+fun ShortcutButton(onClick: () -> Unit, iconRes: Int, contentDescription: String) {
+    Button(onClick = onClick, modifier = Modifier.padding(4.dp)) {
+        Image(
+            painter = painterResource(iconRes),
+            contentDescription = contentDescription,
+            modifier = Modifier.padding(4.dp)
+        )
+    }
+}
 
 @Composable
 fun FlashAddLayout(
@@ -136,26 +166,20 @@ fun FlashAddLayout(
     onCountChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val mediumPadding = 5.dp
-
     Card(
         modifier = modifier,
-        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(mediumPadding),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(mediumPadding)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.padding(16.dp)
         ) {
-
-            EditNumberField(R.string.quantity, quantity, "", onQtyChange, Modifier, KeyboardType.Decimal)
-            EditNumberField(R.string.factor, factor, "", onFactorChange, Modifier, KeyboardType.Decimal)
-            EditNumberField(R.string.count, count, "", onCountChange, Modifier, KeyboardType.Number)
-
+            EditNumberField(R.string.quantity, quantity, "Quantité", onQtyChange, Modifier.fillMaxWidth(), KeyboardType.Decimal)
+            EditNumberField(R.string.factor, factor, "Facteur", onFactorChange, Modifier.fillMaxWidth(), KeyboardType.Decimal)
+            EditNumberField(R.string.count, count, "Nombre", onCountChange, Modifier.fillMaxWidth(), KeyboardType.Number)
         }
     }
 }
-
 
 @Composable
 fun EditNumberField(
@@ -166,19 +190,16 @@ fun EditNumberField(
     modifier: Modifier = Modifier,
     fieldType: KeyboardType = KeyboardType.Text
 ) {
-    val mediumPadding = 5.dp
-
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(mediumPadding)
+        modifier = modifier
     ) {
-        Text(text = stringResource(name))
-
+        Text(text = stringResource(name), modifier = Modifier.weight(1f))
         TextField(
             value = value,
             singleLine = true,
-            modifier = modifier,
+            modifier = Modifier.weight(2f),
             onValueChange = onValueChanged,
             label = { Text(label) },
             keyboardOptions = KeyboardOptions(keyboardType = fieldType)
@@ -186,39 +207,41 @@ fun EditNumberField(
     }
 }
 
-
-
-
 @Composable
-fun EmissionStatus(score: Double, modifier: Modifier = Modifier) {
+fun EmissionStatus(
+    label: String, 
+    score: Double, 
+    modifier: Modifier = Modifier,
+    containerColor: androidx.compose.ui.graphics.Color = colorScheme.secondaryContainer
+) {
     Card(
-        modifier = modifier
+        modifier = modifier,
+        colors = CardDefaults.cardColors(containerColor = containerColor)
     ) {
-        Text(
-            text = stringResource(R.string.emission_unit_kg, score),
-            modifier = Modifier.padding(8.dp)
-        )
-
+        Column(modifier = Modifier.padding(12.dp).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(text = label, style = typography.labelSmall)
+            Text(
+                text = stringResource(R.string.emission_unit_kg, score),
+                style = typography.headlineSmall,
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }
 
 @Composable
 fun EmissionName(name: String, modifier: Modifier = Modifier) {
-    Card(
-        modifier = modifier
-    ) {
+    Card(modifier = modifier) {
         Text(
             text = name,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(8.dp)
+            modifier = Modifier.padding(12.dp).fillMaxWidth(),
+            style = typography.titleMedium
         )
-
     }
 }
 
-
-
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun FlashAddPreview() {
     Devmoles2co2Theme {

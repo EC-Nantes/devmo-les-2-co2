@@ -9,12 +9,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-/**
- * ViewModel containing the app data and methods to process the data
- */
 class AppViewModel : ViewModel() {
 
-    // App UI state
     private val _uiState = MutableStateFlow(AppUiState())
     val uiState: StateFlow<AppUiState> = _uiState.asStateFlow()
 
@@ -24,7 +20,10 @@ class AppViewModel : ViewModel() {
         private set
     var userCount by mutableStateOf("")
         private set
-    var userScore: Double = 0.0
+    
+    // Changement : userScore est maintenant un état observé par Compose
+    var userScore by mutableStateOf(0.0)
+        private set
 
 
     init {
@@ -33,23 +32,16 @@ class AppViewModel : ViewModel() {
 
     fun resetGame() {
         _uiState.value = AppUiState()
-        changeEmission(0.0, 0.0, "Default")
+        changeEmission(0.0, 0.0, "Nouvelle émission")
     }
 
     fun addEmission() {
         if (userScore != 0.0) {
-            val tmp = "Emission: %.2f (qty: %.2f, fac: %.2f, cnt: %d, name: %s)\n"
-            val qty = userQuantity.toDoubleOrNull() ?: 0.0
-            val fac = userFactor.toDoubleOrNull() ?: 0.0
-            val cnt =  userCount.toIntOrNull() ?: 0
-
+            val tmp = "Ajout : %.2f kg (q: %s, f: %s, n: %s)\n"
             _uiState.update { currentState ->
                 currentState.copy(
-                    name = "Default",
-                    currentQuantity = 0.0,
-                    currentEmissionFactor = 0.0,
-                    totalScore = currentState.totalScore.plus(userScore),
-                    currentInfo = currentState.currentInfo + tmp.format(userScore, qty, fac, cnt, currentState.name)
+                    totalScore = currentState.totalScore + userScore,
+                    currentInfo = currentState.currentInfo + tmp.format(userScore, userQuantity, userFactor, userCount)
                 )
             }
             userCount = "0"
@@ -59,7 +51,7 @@ class AppViewModel : ViewModel() {
     fun updateEmission() {
         val quantity = userQuantity.toDoubleOrNull() ?: 0.0
         val factor = userFactor.toDoubleOrNull() ?: 0.0
-        val count = userCount.toDoubleOrNull() ?: 0.0
+        val count = userCount.toDoubleOrNull() ?: 1.0
         userScore = quantity * factor * count
     }
 
@@ -68,13 +60,11 @@ class AppViewModel : ViewModel() {
             currentState.copy(
                 name = name,
                 currentQuantity = quantity,
-                currentEmissionFactor = factor,
-                totalScore = currentState.totalScore,
-                currentInfo = currentState.currentInfo
+                currentEmissionFactor = factor
             )
         }
-        userQuantity = quantity.toString()
-        userFactor = factor.toString()
+        userQuantity = if (quantity == 0.0) "" else quantity.toString()
+        userFactor = if (factor == 0.0) "" else factor.toString()
         userCount = "1"
         updateEmission()
     }
