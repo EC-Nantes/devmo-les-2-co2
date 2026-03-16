@@ -51,7 +51,7 @@ fun FlashAddScreen(appViewModel: AppViewModel = viewModel()) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        // 1. Le Header XML de votre ami (et vos corrections)
+        // Le Header XML
         AndroidView(
             factory = { context ->
                 LayoutInflater.from(context).inflate(R.layout.header_ajout_flash, null)
@@ -67,7 +67,7 @@ fun FlashAddScreen(appViewModel: AppViewModel = viewModel()) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             
-            // 2. Icônes de raccourcis (Merge de votre ami)
+            // List des boutons d'accès rapide
             Row(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically,
@@ -92,10 +92,10 @@ fun FlashAddScreen(appViewModel: AppViewModel = viewModel()) {
                 )
             }
 
-            // 3. Nom de l'émission actuelle
+            // Nom de l'émission actuelle
             EmissionName(appUiState.name, modifier = Modifier.fillMaxWidth())
 
-            // 4. Formulaire de saisie
+            // Formulaire de saisie
             FlashAddLayout(
                 quantity = appViewModel.userQuantity,
                 factor = appViewModel.userFactor,
@@ -106,14 +106,14 @@ fun FlashAddScreen(appViewModel: AppViewModel = viewModel()) {
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // 5. Score de l'émission en cours
+            // Score de l'émission en cours
             EmissionStatus(
                 label = "Émission actuelle",
                 score = appViewModel.userScore, 
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // 6. Bouton Ajouter
+            // Bouton Ajouter
             OutlinedButton(
                 onClick = { appViewModel.addEmission() },
                 modifier = Modifier.fillMaxWidth()
@@ -124,7 +124,7 @@ fun FlashAddScreen(appViewModel: AppViewModel = viewModel()) {
                 )
             }
 
-            // 7. Historique / Info (Optionnel pour debug)
+            // log pour les tests
             if (appUiState.currentInfo.isNotEmpty()) {
                 Text(
                     text = appUiState.currentInfo,
@@ -134,7 +134,7 @@ fun FlashAddScreen(appViewModel: AppViewModel = viewModel()) {
                 )
             }
 
-            // 8. Score Total (Merge de votre ami)
+            // Pour les tests
             EmissionStatus(
                 label = "Score Total",
                 score = appUiState.totalScore, 

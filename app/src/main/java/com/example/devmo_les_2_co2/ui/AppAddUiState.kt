@@ -5,5 +5,6 @@ data class AppUiState(
     val currentQuantity: Double = 0.0,
     val currentEmissionFactor: Double = 0.0,
     val totalScore: Double = 0.0,
+    // Chaine de caractères par défaut pour voir son emplacement
     val currentInfo: String = "I am here\n"
 )
